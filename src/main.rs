@@ -15,9 +15,8 @@ const COMMON_PORTS: [u16; 94] = [
     50095, 60010, 60030,
 ];
 
-fn scan_port(ip: IpAddr, port: &u16, timeout: Duration) -> bool {
-    let socket_addr_str = format!("{}:{}", ip, port);
-    let socket_addr = socket_addr_str.parse::<SocketAddr>().unwrap();
+fn scan_port(ip: IpAddr, port: u16, timeout: Duration) -> bool {
+    let socket_addr = SocketAddr::new(ip, port);
     TcpStream::connect_timeout(&socket_addr, timeout).is_ok()
 }
 
@@ -46,7 +45,7 @@ fn main() {
     };
 
     for port in ports {
-        if scan_port(target_ip.parse().unwrap(), port, timeout) {
+        if scan_port(target_ip.parse().unwrap(), *port, timeout) {
             println!("Port {} is open", port);
         }
     }
